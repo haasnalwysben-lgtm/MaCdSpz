@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #008000; /* Classic Solitaire Green */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        /* The Windows 95 Pop-Up Style */
+        #popup {
+            display: none; /* Hidden until triggered */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #000000 #000000 #ffffff;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .title-bar {
+            background: #000080;
+            color: white;
+            padding: 4px 6px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+            font-size: 15px;
+            color: black;
+        }
+        button {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #000000 #000000 #ffffff;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:active {
+            border-color: #000000 #ffffff #ffffff #000000; /* Clicked effect */
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="solitaireCanvas"></canvas>
+
+    <div id="popup">
+        <div class="title-bar">
+            <span>SYSTEM ALERT: 50 DECKS CLEARED</span>
+            <span>X</span>
+        </div>
+        <div class="content">
+            <p><strong>You have played your cards perfectly!</strong></p>
+            <p>You are the grand prize winner of the Half-Century Son-Service Sweepstakes.</p>
+            <p>Prize includes: 1x Kitchen Detail, 1x Living Room Vacuum, 3x Free Compliments. Do not fold.</p>
+            <a href="tel:18005550199">
+                <button>CLICK TO CLAIM PRIZE</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('solitaireCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Card properties
+        let x = 100, y = 100, vx = 5, vy = -5;
+        const cardWidth = 71, cardHeight = 96;
+        const gravity = 0.5;
+        const bounce = -0.75;
+
+        function drawCard(x, y) {
+            // Draw card back
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(x, y, cardWidth, cardHeight);
+            ctx.strokeStyle = '#0000ff';
+            ctx.strokeRect(x, y, cardWidth, cardHeight);
+            // Quick pattern for card back
+            ctx.fillStyle = '#0000ff';
+            ctx.fillRect(x + 5, y + 5, cardWidth - 10, cardHeight - 10);
+        }
+
+        function animate() {
+            // Note: intentionally NOT clearing the canvas to create the Windows trail effect
+            drawCard(x, y);
+
+            vy += gravity;
+            x += vx;
+            y += vy;
+
+            // Bounce off bottom
+            if (y + cardHeight > canvas.height) {
+                y = canvas.height - cardHeight;
+                vy *= bounce;
+            }
+            // Bounce off sides
+            if (x + cardWidth > canvas.width || x < 0) {
+                vx *= -1;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Trigger the pop-up after 4 seconds
+        setTimeout(() => {
+            document.getElementById('popup').style.display = 'block';
+        }, 4000);
+    </script>
+</body>
+</html>
